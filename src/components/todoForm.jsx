@@ -1,65 +1,23 @@
-import React, { useState, useEffect } from "react";
-import { useTodoContext } from "../context/todoContext";
+import React from 'react'
 
-const TodoForm = () => {
-  const { state, dispatch } = useTodoContext();
-  const [text, setText] = useState("");
-  const [editTodo, setEditTodo] = useState(null);
-
-  useEffect(() => {
-    if (editTodo) {
-      setText(editTodo.text);
-    }
-  }, [editTodo]);
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    
-    if (!text.trim()) return;
-
-    if (editTodo) {
-      dispatch({
-        type: "UPDATE_TODO",
-        payload: { 
-          id: editTodo.id, 
-          text: text.trim(),
-          completed: editTodo.completed 
-        },
-      });
-      setEditTodo(null);
-    } else {
-      dispatch({
-        type: "ADD_TODO",
-        payload: { 
-          id: Date.now(), 
-          text: text.trim(),
-          completed: false 
-        },
-      });
-    }
-    setText("");
-  };
-
+export default function TodoForm({ input, setInput, addTodo }) {
   return (
-    <form onSubmit={handleSubmit} className="mb-4">
-      <input
-        type="text"
-        placeholder="Add or update todo..."
-        className="border rounded-md p-2 w-full mb-2 placeholder:text-blue-500 font-bold text-black outline-none"
-        value={text}
-        onChange={(e) => setText(e.target.value)}
-      />
-      <button
-        type="submit"
-        className={`${
-          editTodo ? "bg-green-500" : "bg-blue-500"
-        } text-white px-4 py-2 rounded`}
-        disabled={!text.trim()}
-      >
-        {editTodo ? "Update Todo" : "Add Todo"}
-      </button>
+    <form onSubmit={addTodo} className="mb-6">
+      <div className="flex gap-2">
+        <input
+          type="text"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          className="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+          placeholder="Add a new todo..."
+        />
+        <button
+          type="submit"
+          className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+        >
+          Add
+        </button>
+      </div>
     </form>
-  );
-};
-
-export default TodoForm;
+  )
+}
